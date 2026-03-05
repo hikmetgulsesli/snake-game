@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Direction, SwipeDirection, TouchPosition } from '../types';
 
+const DIRECTION_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'];
+
 export interface UseGameControlsOptions {
   /** Whether the game has started */
   gameStarted: boolean;
@@ -120,8 +122,7 @@ export function useGameControls({
    * Check if a key is a game control key
    */
   const isGameControlKey = useCallback((key: string, code: string): boolean => {
-    const directionKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'];
-    return directionKeys.includes(key) || code === 'Space';
+    return DIRECTION_KEYS.includes(key) || code === 'Space';
   }, []);
 
   /**
