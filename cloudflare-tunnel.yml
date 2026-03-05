@@ -1,0 +1,7 @@
+tunnel: <your-tunnel-id>
+credentials-file: /home/setrox/.cloudflared/<your-tunnel-id>.json
+
+ingress:
+  - hostname: snake-game.setrox.com.tr
+    service: http://localhost:3528
+  - service: http_status:404
