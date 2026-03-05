@@ -1,5 +1,5 @@
 tunnel: <your-tunnel-id>
-credentials-file: /home/setrox/.cloudflared/<your-tunnel-id>.json
+credentials-file: /home/<user>/.cloudflared/<your-tunnel-id>.json
 
 ingress:
   - hostname: snake-game.setrox.com.tr

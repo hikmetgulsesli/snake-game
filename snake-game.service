@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=%I
-WorkingDirectory=/home/setrox/projects/snake-game
+WorkingDirectory=/path/to/your/snake-game
 ExecStart=/usr/bin/node server.js
 Restart=always
 RestartSec=5

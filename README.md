@@ -67,7 +67,7 @@ Response:
 {
   "status": "ok",
   "service": "snake-game",
-  "timestamp": "2026-03-05T06:00:00.000Z"
+  "timestamp": "<current-iso-timestamp>"
 }
 ```
 
@@ -117,7 +117,7 @@ Response:
 4. Update `cloudflare-tunnel.yml` with your tunnel ID:
    ```yaml
    tunnel: <your-tunnel-id>
-   credentials-file: /home/setrox/.cloudflared/<your-tunnel-id>.json
+   credentials-file: /home/<user>/.cloudflared/<your-tunnel-id>.json
    
    ingress:
      - hostname: snake-game.setrox.com.tr
