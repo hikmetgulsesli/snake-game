@@ -1,0 +1,81 @@
+:root {
+  /* Primary Colors */
+  --stitch-accent: #22c55e;
+  --stitch-accent-glow: rgba(34, 197, 94, 0.3);
+  --stitch-accent-light: #4ade80;
+  
+  /* Semantic Colors */
+  --stitch-danger: #ef4444;
+  --stitch-danger-glow: rgba(239, 68, 68, 0.3);
+  --stitch-warning: #f59e0b;
+  --stitch-success: #22c55e;
+  
+  /* Background Colors */
+  --stitch-bg-primary: #0f0f12;
+  --stitch-bg-secondary: #1a1a1f;
+  --stitch-bg-card: #232329;
+  --stitch-bg-hover: #2a2a32;
+  
+  /* Border & Divider */
+  --stitch-border: #2e2e36;
+  --stitch-border-light: #3a3a44;
+  
+  /* Text Colors */
+  --stitch-text-primary: #f5f5f7;
+  --stitch-text-secondary: #a0a0a8;
+  --stitch-text-muted: #6b6b74;
+  
+  /* Typography */
+  --stitch-font-heading: 'Space Grotesk', sans-serif;
+  --stitch-font-body: 'DM Sans', sans-serif;
+  
+  /* Font Sizes */
+  --stitch-text-xs: 12px;
+  --stitch-text-sm: 14px;
+  --stitch-text-base: 16px;
+  --stitch-text-lg: 20px;
+  --stitch-text-xl: 24px;
+  --stitch-text-2xl: 32px;
+  --stitch-text-3xl: 40px;
+  --stitch-text-4xl: 48px;
+  --stitch-text-5xl: 64px;
+  
+  /* Font Weights */
+  --stitch-font-normal: 400;
+  --stitch-font-medium: 500;
+  --stitch-font-semibold: 600;
+  --stitch-font-bold: 700;
+  
+  /* Spacing */
+  --stitch-space-1: 4px;
+  --stitch-space-2: 8px;
+  --stitch-space-3: 12px;
+  --stitch-space-4: 16px;
+  --stitch-space-5: 20px;
+  --stitch-space-6: 24px;
+  --stitch-space-8: 32px;
+  --stitch-space-10: 40px;
+  --stitch-space-12: 48px;
+  --stitch-space-16: 64px;
+  
+  /* Border Radius */
+  --stitch-radius-sm: 4px;
+  --stitch-radius-md: 8px;
+  --stitch-radius-lg: 12px;
+  --stitch-radius-xl: 16px;
+  --stitch-radius-2xl: 20px;
+  --stitch-radius-full: 9999px;
+  
+  /* Shadows */
+  --stitch-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --stitch-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --stitch-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --stitch-shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.5);
+  --stitch-glow-accent: 0 0 40px rgba(34, 197, 94, 0.3);
+  --stitch-glow-danger: 0 0 32px rgba(239, 68, 68, 0.3);
+  
+  /* Transitions */
+  --stitch-transition-fast: 150ms ease;
+  --stitch-transition-base: 200ms ease;
+  --stitch-transition-slow: 300ms ease;
+}

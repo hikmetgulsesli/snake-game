@@ -1,0 +1,16 @@
+[Unit]
+Description=Snake Game Server
+After=network.target
+
+[Service]
+Type=simple
+User=%I
+WorkingDirectory=/path/to/your/snake-game
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+Environment=PORT=3528
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=default.target
