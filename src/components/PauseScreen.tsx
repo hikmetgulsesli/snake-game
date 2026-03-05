@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface PauseScreenProps {
   score: number;
@@ -7,12 +7,7 @@ interface PauseScreenProps {
 }
 
 export function PauseScreen({ score, onResume, onQuitToMenu }: PauseScreenProps) {
-  const [animateIn, setAnimateIn] = useState(false);
-
-  useEffect(() => {
-    const timer = requestAnimationFrame(() => setAnimateIn(true));
-    return () => cancelAnimationFrame(timer);
-  }, []);
+  const [animateIn] = useState(true);
 
   return (
     <div 

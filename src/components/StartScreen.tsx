@@ -1,35 +1,21 @@
-import { useState, useEffect } from 'react';
-import type { Difficulty } from '../types/game';
-import { DIFFICULTY_SPEEDS } from '../types/game';
+import { useState } from 'react';
+import type { Difficulty } from '../types/game.js';
+import { DIFFICULTY_SPEEDS } from '../types/game.js';
 
 interface StartScreenProps {
   onStart: (difficulty: Difficulty) => void;
   highScore: number;
 }
 
-const difficulties: { value: Difficulty; label: string }[] = [
-  { value: 'easy', label: 'Easy' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'expert', label: 'Expert' },
-];
-
-const Key = ({ children }: { children: React.ReactNode }) => (
-  <span 
-    className="px-2 py-1 rounded text-xs mx-1" 
-    style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}
-  >
-    {children}
-  </span>
-);
-
 export function StartScreen({ onStart, highScore }: StartScreenProps) {
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('medium');
-  const [animateIn, setAnimateIn] = useState(false);
+  const [animateIn] = useState(true);
 
-  useEffect(() => {
-    const timer = requestAnimationFrame(() => setAnimateIn(true));
-    return () => cancelAnimationFrame(timer);
-  }, []);
+  const difficulties: { value: Difficulty; label: string }[] = [
+    { value: 'easy', label: 'Easy' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'expert', label: 'Expert' },
+  ];
 
   const getSpeedLabel = (difficulty: Difficulty): string => {
     const speed = DIFFICULTY_SPEEDS[difficulty];
@@ -135,13 +121,19 @@ export function StartScreen({ onStart, highScore }: StartScreenProps) {
         style={{ color: 'var(--stitch-text-secondary)' }}
       >
         <p className="mb-2">
-          {['↑', '↓', '←', '→'].map(key => <Key key={key}>{key}</Key>)}
-          {' or '}
-          {['W', 'A', 'S', 'D'].map(key => <Key key={key}>{key}</Key>)}
+          <span className="px-2 py-1 rounded text-xs mx-1" style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}>↑</span>
+          <span className="px-2 py-1 rounded text-xs mx-1" style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}>↓</span>
+          <span className="px-2 py-1 rounded text-xs mx-1" style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}>←</span>
+          <span className="px-2 py-1 rounded text-xs mx-1" style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}>→</span>
+          {' '}or{' '}
+          <span className="px-2 py-1 rounded text-xs mx-1" style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}>W</span>
+          <span className="px-2 py-1 rounded text-xs mx-1" style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}>A</span>
+          <span className="px-2 py-1 rounded text-xs mx-1" style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}>S</span>
+          <span className="px-2 py-1 rounded text-xs mx-1" style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}>D</span>
           {' '}to move
         </p>
         <p>
-          <Key>Space</Key>
+          <span className="px-2 py-1 rounded text-xs mx-1" style={{ backgroundColor: 'var(--stitch-bg-card)', border: '1px solid var(--stitch-border)' }}>Space</span>
           {' '}to pause
         </p>
       </div>

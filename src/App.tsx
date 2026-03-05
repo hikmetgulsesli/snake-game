@@ -1,23 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import './index.css';
-import { Volume2, VolumeX } from 'lucide-react';
-import {
-  StartScreen,
-  GameOverScreen,
-  PauseScreen,
-  ScoreBoard,
-  GameBoard
+import { 
+  StartScreen, 
+  GameOverScreen, 
+  PauseScreen, 
+  ScoreBoard, 
+  GameBoard 
 } from './components';
-import { useGameControls, useAudio } from './hooks';
+import { useAudio } from './hooks/useAudio';
 import type { Position, Direction, Difficulty, GameScreen } from './types/game';
-import { DIFFICULTY_SPEEDS } from './types/game';
-import {
-  generateFood,
-  getNextHead,
-  isOutOfBounds,
-  isSelfCollision,
-  isFoodCollision,
-} from './engine/gameEngine';
+import { DIFFICULTY_SPEEDS, GRID_SIZE } from './types/game';
 
 function App() {
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
@@ -31,50 +23,47 @@ function App() {
   });
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
   const [isNewHighScore, setIsNewHighScore] = useState(false);
-
+  
   const directionRef = useRef(direction);
   const gameLoopRef = useRef<number | null>(null);
 
-  const {
-    isSupported: isAudioSupported,
-    playEatSound,
-    playGameOverSound,
-    isMuted,
-    volume,
-    toggleMute,
-    setVolume,
-    init: initAudio,
-  } = useAudio();
+  // Use centralized audio hook
+  const { playEatSound, playGameOverSound } = useAudio();
 
   useEffect(() => {
     directionRef.current = direction;
   }, [direction]);
 
-  // Use the game controls hook for input handling
-  const { touchHandlers } = useGameControls({
-    gameStarted: screen !== 'start',
-    gameOver: screen === 'gameOver',
-    paused: screen === 'paused',
-    currentDirection: direction,
-    onDirectionChange: setDirection,
-    onPauseToggle: () => {
-      if (screen === 'playing') {
-        setScreen('paused');
-      } else if (screen === 'paused') {
-        setScreen('playing');
-      }
-    },
-  });
+  const generateFood = useCallback((currentSnake: Position[]): Position => {
+    let newFood: Position;
+    do {
+      newFood = {
+        x: Math.floor(Math.random() * GRID_SIZE),
+        y: Math.floor(Math.random() * GRID_SIZE),
+      };
+    } while (currentSnake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+    return newFood;
+  }, []);
 
   const moveSnake = useCallback(() => {
     if (screen !== 'playing') return;
 
     setSnake(currentSnake => {
-      const head = currentSnake[0];
-      const newHead = getNextHead(head, directionRef.current);
+      const newSnake = [...currentSnake];
+      const head = { ...newSnake[0] };
 
-      // Check wall collision
-      if (isOutOfBounds(newHead)) {
+      switch (directionRef.current) {
+        case 'UP': head.y -= 1; break;
+        case 'DOWN': head.y += 1; break;
+        case 'LEFT': head.x -= 1; break;
+        case 'RIGHT': head.x += 1; break;
+      }
+
+      // Check wall and self collision
+      const isWallCollision = head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE;
+      const isSelfCollision = newSnake.some(segment => segment.x === head.x && segment.y === head.y);
+
+      if (isWallCollision || isSelfCollision) {
         setScreen('gameOver');
         playGameOverSound();
         const newScore = score;
@@ -86,23 +75,10 @@ function App() {
         return currentSnake;
       }
 
-      // Check self collision (check against body only, not head)
-      if (isSelfCollision(newHead, currentSnake)) {
-        setScreen('gameOver');
-        playGameOverSound();
-        const newScore = score;
-        if (newScore > highScore) {
-          setIsNewHighScore(true);
-          localStorage.setItem('snake-game-highscore', newScore.toString());
-          setHighScore(newScore);
-        }
-        return currentSnake;
-      }
-
-      const newSnake = [newHead, ...currentSnake];
+      newSnake.unshift(head);
 
       // Check food collision
-      if (isFoodCollision(newHead, food)) {
+      if (head.x === food.x && head.y === food.y) {
         setScore(s => s + 10);
         setFood(generateFood(newSnake));
         playEatSound();
@@ -112,11 +88,11 @@ function App() {
 
       return newSnake;
     });
-  }, [food, screen, playEatSound, playGameOverSound, score, highScore]);
+  }, [food, screen, generateFood, playEatSound, playGameOverSound, score, highScore]);
 
   useEffect(() => {
     if (screen !== 'playing') return;
-
+    
     const speed = DIFFICULTY_SPEEDS[difficulty] - Math.min(score * 0.5, 40);
     gameLoopRef.current = window.setInterval(moveSnake, Math.max(speed, 40));
     return () => {
@@ -124,8 +100,74 @@ function App() {
     };
   }, [difficulty, score, moveSnake, screen]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (screen === 'start') return;
+      
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (screen === 'playing') {
+          setScreen('paused');
+        } else if (screen === 'paused') {
+          setScreen('playing');
+        }
+        return;
+      }
+
+      if (screen !== 'playing') return;
+
+      switch (e.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+          if (directionRef.current !== 'DOWN') setDirection('UP');
+          break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+          if (directionRef.current !== 'UP') setDirection('DOWN');
+          break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+          if (directionRef.current !== 'RIGHT') setDirection('LEFT');
+          break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+          if (directionRef.current !== 'LEFT') setDirection('RIGHT');
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [screen]);
+
+  // Touch controls
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart.current || screen !== 'playing') return;
+
+    const dx = e.changedTouches[0].clientX - touchStart.current.x;
+    const dy = e.changedTouches[0].clientY - touchStart.current.y;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (dx > 0 && directionRef.current !== 'LEFT') setDirection('RIGHT');
+      else if (dx < 0 && directionRef.current !== 'RIGHT') setDirection('LEFT');
+    } else {
+      if (dy > 0 && directionRef.current !== 'UP') setDirection('DOWN');
+      else if (dy < 0 && directionRef.current !== 'DOWN') setDirection('UP');
+    }
+    touchStart.current = null;
+  };
+
   const startGame = (selectedDifficulty: Difficulty) => {
-    initAudio(); // Initialize audio on game start
     setDifficulty(selectedDifficulty);
     resetGame();
     setScreen('playing');
@@ -169,36 +211,13 @@ function App() {
   };
 
   return (
-    <div
+    <div 
       className="min-h-screen flex flex-col items-center py-6 px-4"
       style={{ backgroundColor: 'var(--stitch-bg-primary)' }}
     >
-      {/* Audio Controls - Top Right */}
-      {isAudioSupported && (
-        <div className="fixed top-4 right-4 flex items-center gap-2 z-50">
-          <button
-            onClick={toggleMute}
-            className="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition-all cursor-pointer"
-            title={isMuted ? 'Unmute' : 'Mute'}
-          >
-            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-          </button>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={volume}
-            onChange={(e) => setVolume(parseFloat(e.target.value))}
-            className="w-20 h-1.5 bg-slate-600 rounded-lg appearance-none cursor-pointer accent-green-500"
-            title="Volume"
-          />
-        </div>
-      )}
-
       {screen === 'start' && (
-        <StartScreen
-          onStart={startGame}
+        <StartScreen 
+          onStart={startGame} 
           highScore={highScore}
         />
       )}
@@ -207,9 +226,9 @@ function App() {
         <div className="w-full max-w-lg animate-fade-in">
           {/* Header */}
           <div className="text-center mb-6">
-            <h1
+            <h1 
               className="text-5xl font-bold mb-4 tracking-wider"
-              style={{
+              style={{ 
                 fontFamily: 'var(--stitch-font-heading)',
                 color: 'var(--stitch-accent)',
                 textShadow: '0 0 40px var(--stitch-accent-glow)',
@@ -221,97 +240,97 @@ function App() {
           </div>
 
           {/* Game Board */}
-          <GameBoard
-            snake={snake}
+          <GameBoard 
+            snake={snake} 
             food={food}
-            onTouchStart={touchHandlers.onTouchStart}
-            onTouchEnd={touchHandlers.onTouchEnd}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           />
 
           {/* Controls hint */}
-          <div
+          <div 
             className="mt-6 text-center text-sm"
             style={{ color: 'var(--stitch-text-secondary)' }}
           >
             <p>
-              <span
+              <span 
                 className="px-2 py-1 rounded text-xs mx-1"
-                style={{
-                  backgroundColor: 'var(--stitch-bg-card)',
+                style={{ 
+                  backgroundColor: 'var(--stitch-bg-card)', 
                   border: '1px solid var(--stitch-border)',
                 }}
               >
                 ↑
               </span>
-              <span
+              <span 
                 className="px-2 py-1 rounded text-xs mx-1"
-                style={{
-                  backgroundColor: 'var(--stitch-bg-card)',
+                style={{ 
+                  backgroundColor: 'var(--stitch-bg-card)', 
                   border: '1px solid var(--stitch-border)',
                 }}
               >
                 ↓
               </span>
-              <span
+              <span 
                 className="px-2 py-1 rounded text-xs mx-1"
-                style={{
-                  backgroundColor: 'var(--stitch-bg-card)',
+                style={{ 
+                  backgroundColor: 'var(--stitch-bg-card)', 
                   border: '1px solid var(--stitch-border)',
                 }}
               >
                 ←
               </span>
-              <span
+              <span 
                 className="px-2 py-1 rounded text-xs mx-1"
-                style={{
-                  backgroundColor: 'var(--stitch-bg-card)',
+                style={{ 
+                  backgroundColor: 'var(--stitch-bg-card)', 
                   border: '1px solid var(--stitch-border)',
                 }}
               >
                 →
               </span>
               {' '}or{' '}
-              <span
+              <span 
                 className="px-2 py-1 rounded text-xs mx-1"
-                style={{
-                  backgroundColor: 'var(--stitch-bg-card)',
+                style={{ 
+                  backgroundColor: 'var(--stitch-bg-card)', 
                   border: '1px solid var(--stitch-border)',
                 }}
               >
                 W
               </span>
-              <span
+              <span 
                 className="px-2 py-1 rounded text-xs mx-1"
-                style={{
-                  backgroundColor: 'var(--stitch-bg-card)',
+                style={{ 
+                  backgroundColor: 'var(--stitch-bg-card)', 
                   border: '1px solid var(--stitch-border)',
                 }}
               >
                 A
               </span>
-              <span
+              <span 
                 className="px-2 py-1 rounded text-xs mx-1"
-                style={{
-                  backgroundColor: 'var(--stitch-bg-card)',
+                style={{ 
+                  backgroundColor: 'var(--stitch-bg-card)', 
                   border: '1px solid var(--stitch-border)',
                 }}
               >
                 S
               </span>
-              <span
+              <span 
                 className="px-2 py-1 rounded text-xs mx-1"
-                style={{
-                  backgroundColor: 'var(--stitch-bg-card)',
+                style={{ 
+                  backgroundColor: 'var(--stitch-bg-card)', 
                   border: '1px solid var(--stitch-border)',
                 }}
               >
                 D
               </span>
               {' '}to move ·{' '}
-              <span
+              <span 
                 className="px-2 py-1 rounded text-xs mx-1"
-                style={{
-                  backgroundColor: 'var(--stitch-bg-card)',
+                style={{ 
+                  backgroundColor: 'var(--stitch-bg-card)', 
                   border: '1px solid var(--stitch-border)',
                 }}
               >
@@ -323,7 +342,7 @@ function App() {
 
           {/* Pause Screen */}
           {screen === 'paused' && (
-            <PauseScreen
+            <PauseScreen 
               score={score}
               onResume={handleResume}
               onQuitToMenu={handleQuitToMenu}
@@ -334,7 +353,7 @@ function App() {
 
       {/* Game Over Screen */}
       {screen === 'gameOver' && (
-        <GameOverScreen
+        <GameOverScreen 
           score={score}
           highScore={highScore}
           isNewHighScore={isNewHighScore}

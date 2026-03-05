@@ -41,7 +41,7 @@ export function GameBoard({ snake, food, onTouchStart, onTouchEnd }: GameBoardPr
                 top: y * CELL_SIZE,
                 width: CELL_SIZE,
                 height: CELL_SIZE,
-                backgroundColor: (x + y) % 2 === 0 ? '#151519' : '#1a1a1f',
+                backgroundColor: (x + y) % 2 === 0 ? 'var(--stitch-bg-primary)' : 'var(--stitch-bg-secondary)',
               }}
             />
           ))

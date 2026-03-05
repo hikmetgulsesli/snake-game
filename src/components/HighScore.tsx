@@ -1,39 +1,28 @@
 import { useMemo } from 'react';
 
 interface HighScoreProps {
+  highScore: number;
   currentScore?: number;
+  isNewHighScore?: boolean;
   showLabel?: boolean;
   size?: 'sm' | 'md' | 'lg';
 }
 
-function getSavedHighScore(): number {
-  try {
-    const saved = localStorage.getItem('snake-game-highscore');
-    return saved ? parseInt(saved, 10) : 0;
-  } catch {
-    return 0;
-  }
-}
-
-function saveHighScore(score: number): void {
-  try {
-    localStorage.setItem('snake-game-highscore', score.toString());
-  } catch {
-    // Ignore localStorage errors
-  }
-}
-
-export function HighScore({ currentScore, showLabel = true, size = 'md' }: HighScoreProps) {
-  const { highScore, isNewHighScore } = useMemo(() => {
-    const savedHighScore = getSavedHighScore();
-    
-    if (currentScore !== undefined && currentScore > savedHighScore && currentScore > 0) {
-      saveHighScore(currentScore);
-      return { highScore: currentScore, isNewHighScore: true };
+export function HighScore({ 
+  highScore, 
+  currentScore, 
+  isNewHighScore = false,
+  showLabel = true, 
+  size = 'md' 
+}: HighScoreProps) {
+  const displayScore = useMemo(() => {
+    if (currentScore !== undefined && currentScore > 0 && currentScore > highScore) {
+      return currentScore;
     }
-    
-    return { highScore: savedHighScore, isNewHighScore: false };
-  }, [currentScore]);
+    return highScore;
+  }, [highScore, currentScore]);
+
+  const showNewHighScore = isNewHighScore || (currentScore !== undefined && currentScore > 0 && currentScore > highScore);
 
   const sizeClasses = {
     sm: {
@@ -55,28 +44,28 @@ export function HighScore({ currentScore, showLabel = true, size = 'md' }: HighS
   return (
     <div className="text-center">
       {showLabel && (
-        <div 
+        <div
           className={`${classes.label} uppercase tracking-widest mb-1`}
           style={{ color: 'var(--stitch-text-secondary)' }}
         >
           High Score
         </div>
       )}
-      <div 
+      <div
         className={`${classes.value} font-bold`}
-        style={{ 
+        style={{
           fontFamily: 'var(--stitch-font-heading)',
-          color: isNewHighScore ? 'var(--stitch-accent)' : 'var(--stitch-text-primary)',
+          color: showNewHighScore ? 'var(--stitch-accent)' : 'var(--stitch-text-primary)',
         }}
       >
-        {Math.max(highScore, currentScore || 0)}
+        {displayScore}
       </div>
-      {isNewHighScore && (
-        <div 
+      {showNewHighScore && (
+        <div
           className="text-sm mt-1 animate-pulse-slow"
           style={{ color: 'var(--stitch-accent)' }}
         >
-          New High Score! 🎉
+          New High Score!
         </div>
       )}
     </div>

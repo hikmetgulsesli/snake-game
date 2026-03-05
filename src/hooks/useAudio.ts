@@ -29,12 +29,6 @@ function loadPreferences(): AudioPreferences {
   return defaultPreferences;
 }
 
-function checkAudioSupport(): boolean {
-  if (typeof window === 'undefined') return false;
-  const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-  return !!AudioContextClass;
-}
-
 function savePreferences(prefs: AudioPreferences): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
@@ -55,11 +49,17 @@ export interface UseAudioReturn {
   setVolume: (volume: number) => void;
 }
 
+function checkAudioSupport(): boolean {
+  if (typeof window === 'undefined') return true;
+  const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+  return !!AudioContextClass;
+}
+
 export function useAudio(): UseAudioReturn {
   const [isSupported, setIsSupported] = useState(() => checkAudioSupport());
   const [isInitialized, setIsInitialized] = useState(false);
   const [preferences, setPreferences] = useState<AudioPreferences>(() => loadPreferences());
-  
+
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const hasInteractedRef = useRef(false);

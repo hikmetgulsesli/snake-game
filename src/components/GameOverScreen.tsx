@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface GameOverScreenProps {
   score: number;
@@ -8,19 +8,14 @@ interface GameOverScreenProps {
   onBackToMenu: () => void;
 }
 
-export function GameOverScreen({ 
-  score, 
-  highScore, 
-  isNewHighScore, 
-  onRestart, 
-  onBackToMenu 
+export function GameOverScreen({
+  score,
+  highScore,
+  isNewHighScore,
+  onRestart,
+  onBackToMenu
 }: GameOverScreenProps) {
-  const [animateIn, setAnimateIn] = useState(false);
-
-  useEffect(() => {
-    const timer = requestAnimationFrame(() => setAnimateIn(true));
-    return () => cancelAnimationFrame(timer);
-  }, []);
+  const [animateIn] = useState(true);
 
   return (
     <div 
