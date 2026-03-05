@@ -29,6 +29,12 @@ function loadPreferences(): AudioPreferences {
   return defaultPreferences;
 }
 
+function checkAudioSupport(): boolean {
+  if (typeof window === 'undefined') return false;
+  const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+  return !!AudioContextClass;
+}
+
 function savePreferences(prefs: AudioPreferences): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
@@ -50,24 +56,13 @@ export interface UseAudioReturn {
 }
 
 export function useAudio(): UseAudioReturn {
-  const [isSupported, setIsSupported] = useState(true);
+  const [isSupported, setIsSupported] = useState(() => checkAudioSupport());
   const [isInitialized, setIsInitialized] = useState(false);
-  const [preferences, setPreferences] = useState<AudioPreferences>(defaultPreferences);
+  const [preferences, setPreferences] = useState<AudioPreferences>(() => loadPreferences());
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const hasInteractedRef = useRef(false);
-
-  // Load preferences on mount
-  useEffect(() => {
-    setPreferences(loadPreferences());
-    
-    // Check if Web Audio API is supported
-    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!AudioContextClass) {
-      setIsSupported(false);
-    }
-  }, []);
 
   // Initialize audio context on first user interaction
   const init = useCallback(() => {

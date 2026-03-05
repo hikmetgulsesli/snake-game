@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 interface HighScoreProps {
   currentScore?: number;
@@ -6,19 +6,33 @@ interface HighScoreProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export function HighScore({ currentScore, showLabel = true, size = 'md' }: HighScoreProps) {
-  const [highScore, setHighScore] = useState<number>(0);
-  const [isNewHighScore, setIsNewHighScore] = useState(false);
-
-  useEffect(() => {
+function getSavedHighScore(): number {
+  try {
     const saved = localStorage.getItem('snake-game-highscore');
-    const savedHighScore = saved ? parseInt(saved, 10) : 0;
-    setHighScore(savedHighScore);
+    return saved ? parseInt(saved, 10) : 0;
+  } catch {
+    return 0;
+  }
+}
 
+function saveHighScore(score: number): void {
+  try {
+    localStorage.setItem('snake-game-highscore', score.toString());
+  } catch {
+    // Ignore localStorage errors
+  }
+}
+
+export function HighScore({ currentScore, showLabel = true, size = 'md' }: HighScoreProps) {
+  const { highScore, isNewHighScore } = useMemo(() => {
+    const savedHighScore = getSavedHighScore();
+    
     if (currentScore !== undefined && currentScore > savedHighScore && currentScore > 0) {
-      setIsNewHighScore(true);
-      localStorage.setItem('snake-game-highscore', currentScore.toString());
+      saveHighScore(currentScore);
+      return { highScore: currentScore, isNewHighScore: true };
     }
+    
+    return { highScore: savedHighScore, isNewHighScore: false };
   }, [currentScore]);
 
   const sizeClasses = {

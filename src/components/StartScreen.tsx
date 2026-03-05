@@ -12,7 +12,8 @@ export function StartScreen({ onStart, highScore }: StartScreenProps) {
   const [animateIn, setAnimateIn] = useState(false);
 
   useEffect(() => {
-    setAnimateIn(true);
+    const timer = requestAnimationFrame(() => setAnimateIn(true));
+    return () => cancelAnimationFrame(timer);
   }, []);
 
   const difficulties: { value: Difficulty; label: string }[] = [
