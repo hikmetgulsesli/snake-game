@@ -7,9 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint \"**/*.{ts,tsx}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "preview": "vite preview",
-    "start": "node server.js",
-    "test": "vitest run"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.21.2",

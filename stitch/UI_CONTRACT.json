@@ -1,0 +1,117 @@
+[
+  {
+    "screenId": "main-game",
+    "screenTitle": "Main Game Screen",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "Easy",
+        "line": 188
+      },
+      {
+        "type": "button",
+        "label": "Medium",
+        "line": 189
+      },
+      {
+        "type": "button",
+        "label": "Expert",
+        "line": 190
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "Easy",
+        "line": 188
+      },
+      {
+        "type": "button",
+        "label": "Medium",
+        "line": 189
+      },
+      {
+        "type": "button",
+        "label": "Expert",
+        "line": 190
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 3,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "game-over",
+    "screenTitle": "Game Over Screen",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "Play Again",
+        "line": 157
+      },
+      {
+        "type": "button",
+        "label": "Back to Menu",
+        "line": 158
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "Play Again",
+        "line": 157
+      },
+      {
+        "type": "button",
+        "label": "Back to Menu",
+        "line": 158
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 2,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "pause",
+    "screenTitle": "Pause Screen",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "Resume Game",
+        "line": 181
+      },
+      {
+        "type": "button",
+        "label": "Quit to Menu",
+        "line": 182
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "Resume Game",
+        "line": 181
+      },
+      {
+        "type": "button",
+        "label": "Quit to Menu",
+        "line": 182
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 2,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  }
+]
