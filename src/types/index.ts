@@ -1,30 +1,23 @@
 /**
  * Type definitions for Snake game
+ * 
+ * All game-related types are consolidated in game.ts for single source of truth.
+ * This file re-exports them for convenience.
  */
 
-/** Grid position */
-export interface Position {
-  x: number;
-  y: number;
-}
+export type {
+  Position,
+  Direction,
+  Difficulty,
+  GameScreen,
+  GameState,
+} from './game';
 
-/** Game direction */
-export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
-
-/** Game difficulty levels */
-export type Difficulty = 'easy' | 'medium' | 'expert';
-
-/** Game state */
-export interface GameState {
-  snake: Position[];
-  food: Position;
-  direction: Direction;
-  gameOver: boolean;
-  paused: boolean;
-  score: number;
-  difficulty: Difficulty;
-  gameStarted: boolean;
-}
+export {
+  DIFFICULTY_SPEEDS,
+  GRID_SIZE,
+  CELL_SIZE,
+} from './game';
 
 /** Keyboard keys that control the game */
 export type GameKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight' | 'KeyW' | 'KeyS' | 'KeyA' | 'KeyD' | 'Space';
