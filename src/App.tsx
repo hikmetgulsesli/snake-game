@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import './index.css';
-import { 
-  StartScreen, 
-  GameOverScreen, 
-  PauseScreen, 
-  ScoreBoard, 
-  GameBoard 
+import {
+  StartScreen,
+  GameOverScreen,
+  PauseScreen,
+  ScoreBoard,
+  GameBoard
 } from './components';
+import { useGameControls } from './hooks';
 import type { Position, Direction, Difficulty, GameScreen } from './types/game';
 import { DIFFICULTY_SPEEDS, GRID_SIZE } from './types/game';
 
@@ -34,6 +35,22 @@ function App() {
   useEffect(() => {
     snakeRef.current = snake;
   }, [snake]);
+
+  // Use the game controls hook for input handling
+  const { touchHandlers } = useGameControls({
+    gameStarted: screen !== 'start',
+    gameOver: screen === 'gameOver',
+    paused: screen === 'paused',
+    currentDirection: direction,
+    onDirectionChange: setDirection,
+    onPauseToggle: () => {
+      if (screen === 'playing') {
+        setScreen('paused');
+      } else if (screen === 'paused') {
+        setScreen('playing');
+      }
+    },
+  });
 
   const generateFood = useCallback((currentSnake: Position[]): Position => {
     let newFood: Position;
@@ -147,80 +164,13 @@ function App() {
 
   useEffect(() => {
     if (screen !== 'playing') return;
-    
+
     const speed = DIFFICULTY_SPEEDS[difficulty] - Math.min(score * 0.5, 40);
     gameLoopRef.current = window.setInterval(moveSnake, Math.max(speed, 40));
     return () => {
       if (gameLoopRef.current) clearInterval(gameLoopRef.current);
     };
   }, [difficulty, score, moveSnake, screen]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (screen === 'start') return;
-      
-      if (e.code === 'Space') {
-        e.preventDefault();
-        if (screen === 'playing') {
-          setScreen('paused');
-        } else if (screen === 'paused') {
-          setScreen('playing');
-        }
-        return;
-      }
-
-      if (screen !== 'playing') return;
-
-      switch (e.key) {
-        case 'ArrowUp':
-        case 'w':
-        case 'W':
-          if (directionRef.current !== 'DOWN') setDirection('UP');
-          break;
-        case 'ArrowDown':
-        case 's':
-        case 'S':
-          if (directionRef.current !== 'UP') setDirection('DOWN');
-          break;
-        case 'ArrowLeft':
-        case 'a':
-        case 'A':
-          if (directionRef.current !== 'RIGHT') setDirection('LEFT');
-          break;
-        case 'ArrowRight':
-        case 'd':
-        case 'D':
-          if (directionRef.current !== 'LEFT') setDirection('RIGHT');
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [screen]);
-
-  // Touch controls
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchStart.current || screen !== 'playing') return;
-
-    const dx = e.changedTouches[0].clientX - touchStart.current.x;
-    const dy = e.changedTouches[0].clientY - touchStart.current.y;
-
-    if (Math.abs(dx) > Math.abs(dy)) {
-      if (dx > 0 && directionRef.current !== 'LEFT') setDirection('RIGHT');
-      else if (dx < 0 && directionRef.current !== 'RIGHT') setDirection('LEFT');
-    } else {
-      if (dy > 0 && directionRef.current !== 'UP') setDirection('DOWN');
-      else if (dy < 0 && directionRef.current !== 'DOWN') setDirection('UP');
-    }
-    touchStart.current = null;
-  };
 
   const startGame = (selectedDifficulty: Difficulty) => {
     setDifficulty(selectedDifficulty);
@@ -295,11 +245,11 @@ function App() {
           </div>
 
           {/* Game Board */}
-          <GameBoard 
-            snake={snake} 
+          <GameBoard
+            snake={snake}
             food={food}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
+            onTouchStart={touchHandlers.onTouchStart}
+            onTouchEnd={touchHandlers.onTouchEnd}
           />
 
           {/* Controls hint */}
