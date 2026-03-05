@@ -7,6 +7,7 @@ import {
   ScoreBoard, 
   GameBoard 
 } from './components';
+import { useAudio } from './hooks/useAudio';
 import type { Position, Direction, Difficulty, GameScreen } from './types/game';
 import { DIFFICULTY_SPEEDS, GRID_SIZE } from './types/game';
 
@@ -26,6 +27,9 @@ function App() {
   const directionRef = useRef(direction);
   const gameLoopRef = useRef<number | null>(null);
 
+  // Use centralized audio hook
+  const { playEatSound, playGameOverSound } = useAudio();
+
   useEffect(() => {
     directionRef.current = direction;
   }, [direction]);
@@ -39,50 +43,6 @@ function App() {
       };
     } while (currentSnake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
     return newFood;
-  }, []);
-
-  const playEatSound = useCallback(() => {
-    try {
-      const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.value = 600;
-      oscillator.type = 'sine';
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.1);
-    } catch {
-      // Audio not supported, silently fail
-    }
-  }, []);
-
-  const playGameOverSound = useCallback(() => {
-    try {
-      const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.value = 200;
-      oscillator.type = 'sawtooth';
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.3);
-    } catch {
-      // Audio not supported, silently fail
-    }
   }, []);
 
   const moveSnake = useCallback(() => {
@@ -99,21 +59,11 @@ function App() {
         case 'RIGHT': head.x += 1; break;
       }
 
-      // Check wall collision
-      if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-        setScreen('gameOver');
-        playGameOverSound();
-        const newScore = score;
-        if (newScore > highScore) {
-          setIsNewHighScore(true);
-          localStorage.setItem('snake-game-highscore', newScore.toString());
-          setHighScore(newScore);
-        }
-        return currentSnake;
-      }
+      // Check wall and self collision
+      const isWallCollision = head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE;
+      const isSelfCollision = newSnake.some(segment => segment.x === head.x && segment.y === head.y);
 
-      // Check self collision
-      if (newSnake.some(segment => segment.x === head.x && segment.y === head.y)) {
+      if (isWallCollision || isSelfCollision) {
         setScreen('gameOver');
         playGameOverSound();
         const newScore = score;
