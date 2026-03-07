@@ -3,7 +3,9 @@
 import React, { useEffect, useCallback, useState, useSyncExternalStore } from 'react';
 import { GameGrid } from '../components/GameGrid';
 import { HUD } from '../components/HUD';
+import { HighScoresList, HighScoreSummary } from '../components/HighScoresList';
 import { useGameReducer } from '../hooks/useGameReducer';
+import { useHighScores } from '../hooks/useHighScores';
 import { Direction, Difficulty } from '../types/game';
 import { DIRECTION_KEYS, DIFFICULTY_SETTINGS } from '../constants/game';
 
@@ -26,32 +28,45 @@ function useCellSize() {
 
 export default function Home() {
   const { state, initGame, moveSnake, changeDirection, pauseGame, resumeGame, resetGame } = useGameReducer('NORMAL');
-  const [highScore, setHighScore] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const { scores, isLoaded: scoresLoaded, addScore } = useHighScores();
+  const [isMounted, setIsMounted] = useState(false);
+  const [isNewHighScore, setIsNewHighScore] = useState(false);
+  const [newScoreRank, setNewScoreRank] = useState<number | null>(null);
   const cellSize = useCellSize();
 
-  // Load high score from localStorage on mount - using setTimeout to defer setState
+  // Set mounted state for hydration safety
   useEffect(() => {
     const timer = setTimeout(() => {
-      const saved = localStorage.getItem('snake_high_score');
-      const score = saved ? parseInt(saved, 10) : 0;
-      setHighScore(score);
-      setIsLoaded(true);
+      setIsMounted(true);
     }, 0);
     return () => clearTimeout(timer);
   }, []);
 
-  // Save high score when game ends - using setTimeout to defer setState
+  // Handle game over - check and save high score
   useEffect(() => {
-    if (!isLoaded) return;
-    if (state.status === 'GAME_OVER' && state.score > highScore) {
-      localStorage.setItem('snake_high_score', state.score.toString());
+    if (!scoresLoaded) return;
+    if (state.status === 'GAME_OVER' && state.score > 0) {
+      const result = addScore(state.score, state.difficulty);
+      if (result.qualifies) {
+        const timer = setTimeout(() => {
+          setIsNewHighScore(true);
+          setNewScoreRank(result.rank);
+        }, 0);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [scoresLoaded, state.status, state.score, state.difficulty, addScore]);
+
+  // Reset new high score flag when starting new game
+  useEffect(() => {
+    if (state.status === 'PLAYING' || state.status === 'MENU') {
       const timer = setTimeout(() => {
-        setHighScore(state.score);
+        setIsNewHighScore(false);
+        setNewScoreRank(null);
       }, 0);
       return () => clearTimeout(timer);
     }
-  }, [isLoaded, state.status, state.score, highScore]);
+  }, [state.status]);
 
   // Game loop
   useEffect(() => {
@@ -95,9 +110,10 @@ export default function Home() {
 
   const difficulties: Difficulty[] = ['EASY', 'NORMAL', 'HARD'];
   const initialSpeed = DIFFICULTY_SETTINGS[state.difficulty].initialSpeed;
+  const highestScore = scores.length > 0 ? scores[0].score : 0;
 
-  // Prevent hydration mismatch by not rendering until loaded
-  if (!isLoaded) {
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!isMounted) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="text-[#39ff14] text-xl font-bold">Loading...</div>
@@ -129,7 +145,7 @@ export default function Home() {
           speed={state.speed}
           initialSpeed={initialSpeed}
           difficulty={state.difficulty}
-          highScore={highScore}
+          highScore={highestScore}
           foodsEaten={state.foodsEaten}
           className="w-full mb-6"
         />
@@ -165,22 +181,30 @@ export default function Home() {
 
           {/* Menu Overlay */}
           {state.status === 'MENU' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 rounded-xl">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 rounded-xl overflow-hidden">
               <h2 className="text-4xl font-bold mb-2 text-[#39ff14]">SNAKE</h2>
               <p className="text-gray-400 mb-2 text-center px-4">
                 Base: 10 pts × Difficulty Multiplier
               </p>
-              <div className="flex gap-2 text-xs text-gray-500 mb-6">
+              <div className="flex gap-2 text-xs text-gray-500 mb-4">
                 <span className="px-2 py-1 rounded bg-[#1e1e1e]">Easy: 1x</span>
                 <span className="px-2 py-1 rounded bg-[#1e1e1e]">Normal: 1.5x</span>
                 <span className="px-2 py-1 rounded bg-[#1e1e1e]">Hard: 2x</span>
               </div>
               <button
                 onClick={() => initGame(state.difficulty)}
-                className="px-8 py-3 bg-[#39ff14] text-[#0a0a0a] rounded-full font-bold text-lg hover:shadow-[0_0_20px_rgba(57,255,20,0.5)] transition-shadow"
+                className="px-8 py-3 bg-[#39ff14] text-[#0a0a0a] rounded-full font-bold text-lg hover:shadow-[0_0_20px_rgba(57,255,20,0.5)] transition-shadow mb-4"
               >
                 START GAME
               </button>
+
+              {/* High Scores in Menu */}
+              <div className="w-full max-w-xs px-4">
+                <h3 className="text-sm font-bold text-gray-400 mb-2 text-center uppercase tracking-wider">
+                  High Scores
+                </h3>
+                <HighScoresList scores={scores} maxScores={5} />
+              </div>
             </div>
           )}
 
@@ -207,13 +231,15 @@ export default function Home() {
 
           {/* Game Over Overlay */}
           {state.status === 'GAME_OVER' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 rounded-xl">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 rounded-xl overflow-y-auto">
               <h2 className="text-4xl font-bold mb-2 text-red-500">GAME OVER</h2>
               <p className="text-xl mb-2 text-white">Score: {state.score}</p>
-              {state.score >= highScore && state.score > 0 && (
-                <p className="text-[#39ff14] mb-4 font-bold">🏆 New High Score!</p>
+              {isNewHighScore && (
+                <p className="text-[#39ff14] mb-4 font-bold animate-pulse">
+                  🏆 New High Score! #{newScoreRank}
+                </p>
               )}
-              <div className="flex gap-4">
+              <div className="flex gap-4 mb-6">
                 <button
                   onClick={() => initGame(state.difficulty)}
                   className="px-6 py-2 bg-[#39ff14] text-[#0a0a0a] rounded-full font-bold hover:shadow-[0_0_15px_rgba(57,255,20,0.5)] transition-shadow"
@@ -226,6 +252,11 @@ export default function Home() {
                 >
                   MENU
                 </button>
+              </div>
+
+              {/* High Scores Summary */}
+              <div className="w-full max-w-xs px-4">
+                <HighScoreSummary scores={scores} />
               </div>
             </div>
           )}

@@ -93,6 +93,10 @@ export const SCORE_PER_FOOD = 10;
 export const LEVEL_THRESHOLD = 50;
 
 export const LOCAL_STORAGE_KEYS = {
-  HIGH_SCORES: 'snake_game_high_scores',
+  HIGH_SCORES: 'snake_game_high_scores_v2',
   SETTINGS: 'snake_game_settings',
 } as const;
+
+// High Score Settings
+export const MAX_HIGH_SCORES = 10;
+export const HIGH_SCORES_SCHEMA_VERSION = 1;

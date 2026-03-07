@@ -1,0 +1,40 @@
+=== US-001: Project setup and design tokens ===
+COMPLETED: 2026-03-07T21:26:00+03:00
+FILES CHANGED:
+  - app/globals.css (new design tokens)
+  - app/layout.tsx (Space Grotesk + DM Sans fonts)
+  - app/page.tsx (placeholder with retro styling)
+  - next.config.ts (standalone output)
+  - types/game.ts (game types)
+  - constants/game.ts (game constants)
+  - __tests__/home.test.tsx (updated)
+  - __tests__/config.test.ts (new)
+  - __tests__/constants.test.ts (new)
+  - .env.example (new)
+KEY DECISIONS:
+  - Used Space Grotesk/DM Sans font pair (Stitch-compatible)
+  - Retro color palette: neon green #39ff14, dark bg #0a0a0a, food red #ff073a
+  - CSS variables for all design tokens (colors, typography, spacing, animations)
+  - Comprehensive game constants for 3 difficulty levels
+DEPENDENCIES ADDED: None (using existing setup)
+PR_URL: https://github.com/hikmetgulsesli/snake-game/pull/11
+
+=== US-006: Scoring system and difficulty ===
+COMPLETED: 2026-03-07T23:35:00+03:00
+FILES CHANGED:
+  - types/game.ts (added scoreMultiplier, minSpeed, foodsEaten)
+  - constants/game.ts (added DIFFICULTY_MULTIPLIERS, MIN_SPEED_THRESHOLDS, SPEED_DECREMENTS)
+  - hooks/useGameReducer.ts (added calculateScore, calculateNewSpeed functions)
+  - components/HUD.tsx (new component for score/speed display)
+  - components/GameGrid.tsx (game grid component)
+  - app/page.tsx (integrated HUD and game loop)
+  - app/globals.css (retro styling)
+  - __tests__/home.test.tsx (comprehensive scoring and speed tests)
+KEY DECISIONS:
+  - Score calculation: Math.floor(foodsEaten * 10 * multiplier)
+  - Speed decrease per food: Easy -2ms, Normal -3ms, Hard -4ms
+  - Minimum speed thresholds: Easy 100ms, Normal 80ms, Hard 60ms
+  - HUD shows score with multiplier badge, speed in moves/sec, high score
+  - foodsEaten tracked separately from score for accurate calculations
+DEPENDENCIES ADDED: None
+PR_URL: https://github.com/hikmetgulsesli/snake-game/pull/15
