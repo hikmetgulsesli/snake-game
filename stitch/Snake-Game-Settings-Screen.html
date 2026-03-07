@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Snake Game Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#24d665",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#122017",
+                        "card-dark": "#1a2e21",
+                        "card-hover": "#223d2b"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["DM Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'DM Sans', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-display { font-family: 'Space Grotesk', sans-serif; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-slate-100 flex flex-col">
+<header class="flex items-center justify-between border-b border-card-dark px-10 py-4 bg-background-dark/95 backdrop-blur sticky top-0 z-10">
+<div class="flex items-center gap-4 text-primary">
+<span class="material-symbols-outlined text-3xl">sports_esports</span>
+<h2 class="text-white text-xl font-display font-bold leading-tight tracking-[-0.015em]">Snake Game</h2>
+</div>
+<button class="flex items-center gap-2 cursor-pointer overflow-hidden rounded-full h-10 px-5 bg-card-dark hover:bg-card-hover text-white text-sm font-bold transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+<span class="truncate font-display">Back to Game</span>
+</button>
+</header>
+<main class="flex-1 flex justify-center py-10 px-4">
+<div class="w-full max-w-[800px] flex flex-col gap-8">
+<div class="flex flex-col gap-2">
+<h1 class="text-white text-5xl font-display font-black tracking-tight">Settings</h1>
+<p class="text-slate-400 text-lg">Customize your game experience</p>
+</div>
+<div class="grid grid-cols-1 gap-6">
+<!-- Snake Skin Section -->
+<section class="bg-card-dark rounded-xl p-6 shadow-lg border border-white/5">
+<div class="mb-5">
+<h3 class="text-white text-xl font-display font-bold">Snake Skin</h3>
+<p class="text-slate-400 text-sm mt-1">Choose your snake's appearance</p>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<label class="cursor-pointer group">
+<input checked="" class="peer sr-only" name="snake_skin" type="radio"/>
+<div class="rounded-lg p-3 bg-background-dark border-2 border-transparent peer-checked:border-primary transition-all flex flex-col items-center gap-3">
+<div class="w-20 h-20 rounded-lg bg-gradient-to-br from-green-400 to-green-600 shadow-inner flex items-center justify-center">
+<div class="w-12 h-12 bg-white/20 rounded-full flex gap-1 items-center justify-center">
+<div class="w-2 h-2 bg-white rounded-full"></div>
+<div class="w-2 h-2 bg-white rounded-full"></div>
+</div>
+</div>
+<span class="text-sm font-medium text-slate-300 peer-checked:text-white">Classic Green</span>
+</div>
+</label>
+<label class="cursor-pointer group">
+<input class="peer sr-only" name="snake_skin" type="radio"/>
+<div class="rounded-lg p-3 bg-background-dark border-2 border-transparent peer-checked:border-primary transition-all flex flex-col items-center gap-3">
+<div class="w-20 h-20 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 shadow-inner flex items-center justify-center">
+<div class="w-12 h-12 bg-white/20 rounded-full flex gap-1 items-center justify-center">
+<div class="w-2 h-2 bg-white rounded-full"></div>
+<div class="w-2 h-2 bg-white rounded-full"></div>
+</div>
+</div>
+<span class="text-sm font-medium text-slate-300 peer-checked:text-white">Neon Pink</span>
+</div>
+</label>
+<label class="cursor-pointer group">
+<input class="peer sr-only" name="snake_skin" type="radio"/>
+<div class="rounded-lg p-3 bg-background-dark border-2 border-transparent peer-checked:border-primary transition-all flex flex-col items-center gap-3">
+<div class="w-20 h-20 rounded-lg bg-gradient-to-br from-blue-400 to-indigo-600 shadow-inner flex items-center justify-center" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px);">
+<div class="w-12 h-12 bg-white/20 rounded-full flex gap-1 items-center justify-center">
+<div class="w-2 h-2 bg-white rounded-full"></div>
+<div class="w-2 h-2 bg-white rounded-full"></div>
+</div>
+</div>
+<span class="text-sm font-medium text-slate-300 peer-checked:text-white">Cyber Blue</span>
+</div>
+</label>
+</div>
+</section>
+<!-- Grid Style Section -->
+<section class="bg-card-dark rounded-xl p-6 shadow-lg border border-white/5">
+<div class="mb-5">
+<h3 class="text-white text-xl font-display font-bold">Grid Style</h3>
+<p class="text-slate-400 text-sm mt-1">Background pattern for the game board</p>
+</div>
+<div class="flex h-12 items-center justify-center rounded-lg bg-background-dark p-1">
+<label class="flex cursor-pointer h-full grow items-center justify-center rounded-md px-4 has-[:checked]:bg-card-hover has-[:checked]:text-primary text-slate-400 text-sm font-bold transition-colors">
+<span class="material-symbols-outlined mr-2 text-[18px]">grid_on</span>
+<span class="truncate">Solid</span>
+<input checked="" class="sr-only" name="grid_style" type="radio" value="Solid"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center rounded-md px-4 has-[:checked]:bg-card-hover has-[:checked]:text-primary text-slate-400 text-sm font-bold transition-colors">
+<span class="material-symbols-outlined mr-2 text-[18px]">apps</span>
+<span class="truncate">Dotted</span>
+<input class="sr-only" name="grid_style" type="radio" value="Dotted"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center rounded-md px-4 has-[:checked]:bg-card-hover has-[:checked]:text-primary text-slate-400 text-sm font-bold transition-colors">
+<span class="material-symbols-outlined mr-2 text-[18px]">check_box_outline_blank</span>
+<span class="truncate">None</span>
+<input class="sr-only" name="grid_style" type="radio" value="None"/>
+</label>
+</div>
+</section>
+<!-- Audio Settings Section -->
+<section class="bg-card-dark rounded-xl p-6 shadow-lg border border-white/5 flex flex-col gap-6">
+<div>
+<h3 class="text-white text-xl font-display font-bold">Audio</h3>
+<p class="text-slate-400 text-sm mt-1">Manage sound effects and volume</p>
+</div>
+<div class="flex items-center justify-between py-2 border-b border-white/5">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center rounded-lg bg-background-dark text-slate-300 size-10">
+<span class="material-symbols-outlined">music_note</span>
+</div>
+<div>
+<p class="text-white text-base font-medium">Sound Effects</p>
+<p class="text-slate-400 text-sm">Play sounds for eating and game over</p>
+</div>
+</div>
+<label class="relative flex h-8 w-14 cursor-pointer items-center rounded-full bg-background-dark p-1 has-[:checked]:justify-end has-[:checked]:bg-primary transition-colors">
+<div class="h-6 w-6 rounded-full bg-white shadow-sm"></div>
+<input checked="" class="sr-only" type="checkbox"/>
+</label>
+</div>
+<div class="flex items-center gap-4 py-2">
+<div class="flex items-center justify-center rounded-lg bg-background-dark text-slate-300 size-10 shrink-0">
+<span class="material-symbols-outlined">volume_up</span>
+</div>
+<div class="flex-1 flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<p class="text-white text-base font-medium">Master Volume</p>
+<span class="text-primary font-bold text-sm">80%</span>
+</div>
+<div class="relative w-full h-2 bg-background-dark rounded-full overflow-hidden">
+<div class="absolute top-0 left-0 h-full bg-primary rounded-full w-[80%]"></div>
+<input class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" max="100" min="0" type="range" value="80"/>
+</div>
+</div>
+</div>
+</section>
+<div class="flex justify-end mt-4">
+<button class="bg-primary hover:bg-primary/90 text-background-dark font-display font-bold py-3 px-8 rounded-full transition-colors shadow-lg shadow-primary/20">
+                        Save Changes
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

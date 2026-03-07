@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Snake Game Play Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#21c45d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#122017",
+                        "surface-dark": "#1a2e21",
+                        "surface-light": "#e8f0eb",
+                        "border-dark": "#274532",
+                        "border-light": "#d1e0d6",
+                        "text-primary-dark": "#ffffff",
+                        "text-secondary-dark": "#97c4a7",
+                        "text-primary-light": "#122017",
+                        "text-secondary-light": "#4a7058"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark font-display min-h-screen flex flex-col">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark px-10 py-4 mb-6">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">sports_esports</span>
+</div>
+<h2 class="text-2xl font-bold leading-tight tracking-[-0.015em] text-text-primary-light dark:text-text-primary-dark">SNAKE</h2>
+</div>
+<div class="flex gap-4">
+<div class="flex min-w-[120px] max-w-[480px] items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-primary text-background-dark text-base font-bold shadow-[0_0_15px_rgba(33,196,93,0.3)]">
+<span class="truncate">Score: 42</span>
+</div>
+<div class="flex min-w-[120px] max-w-[480px] items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark text-base font-bold">
+<span class="truncate">High Score: 104</span>
+</div>
+</div>
+</header>
+<div class="flex px-4 py-4 justify-center mb-4">
+<div class="flex h-12 w-full max-w-md items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark p-1 border border-border-light dark:border-border-dark">
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-4 has-[:checked]:bg-primary has-[:checked]:text-background-dark text-text-secondary-light dark:text-text-secondary-dark text-base font-medium transition-colors duration-200">
+<span class="truncate">Easy</span>
+<input class="invisible w-0" name="difficulty" type="radio" value="Easy"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-4 has-[:checked]:bg-primary has-[:checked]:text-background-dark text-text-secondary-light dark:text-text-secondary-dark text-base font-medium transition-colors duration-200">
+<span class="truncate">Medium</span>
+<input checked="" class="invisible w-0" name="difficulty" type="radio" value="Medium"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-4 has-[:checked]:bg-primary has-[:checked]:text-background-dark text-text-secondary-light dark:text-text-secondary-dark text-base font-medium transition-colors duration-200">
+<span class="truncate">Expert</span>
+<input class="invisible w-0" name="difficulty" type="radio" value="Expert"/>
+</label>
+</div>
+</div>
+<div class="flex w-full grow flex-col items-center justify-center p-4">
+<div class="relative w-full max-w-[600px] aspect-square rounded-xl bg-surface-light dark:bg-[#151515] border-2 border-border-light dark:border-[#2a2a2a] shadow-inner overflow-hidden flex flex-col">
+<div class="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:30px_30px]"></div>
+<div class="absolute inset-0 grid grid-cols-[repeat(20,minmax(0,1fr))] grid-rows-[repeat(20,minmax(0,1fr))] p-1">
+<div class="col-start-10 row-start-10 bg-primary rounded-md shadow-[0_0_10px_rgba(33,196,93,0.5)] m-[2px]"></div>
+<div class="col-start-9 row-start-10 bg-primary/80 rounded-md m-[2px]"></div>
+<div class="col-start-8 row-start-10 bg-primary/70 rounded-md m-[2px]"></div>
+<div class="col-start-8 row-start-11 bg-primary/60 rounded-md m-[2px]"></div>
+<div class="col-start-8 row-start-12 bg-primary/50 rounded-md m-[2px]"></div>
+<div class="col-start-7 row-start-12 bg-primary/40 rounded-md m-[2px]"></div>
+<div class="col-start-15 row-start-6 bg-red-500 rounded-full shadow-[0_0_12px_rgba(239,68,68,0.6)] m-[2px] flex items-center justify-center">
+<div class="w-1 h-2 bg-green-600 rounded-full -mt-2 ml-1 rotate-45"></div>
+</div>
+</div>
+<div class="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)] pointer-events-none"></div>
+</div>
+</div>
+<footer class="mt-8 pb-6 flex flex-col items-center gap-2">
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal text-center">
+                            Arrow keys or WASD to move • Space to pause
+                        </p>
+</footer>
+</div>
+</div>
+</div>
+</div>
+</body></html>

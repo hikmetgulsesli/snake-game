@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Snake Game Main Interface V2</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#21c45d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#122017",
+                        "slate-900": "#1a2e22",
+                        "slate-800": "#223d2c",
+                        "slate-700": "#2c4c37",
+                        "slate-600": "#3b6348",
+                        "slate-100": "#eaf2ed",
+                        "slate-200": "#d2e5da",
+                        "slate-300": "#b1d4c2"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["DM Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "DM Sans", sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: "Space Grotesk", sans-serif;
+        }
+        .grid-bg {
+            background-image: linear-gradient(to right, #2c4c37 1px, transparent 1px), linear-gradient(to bottom, #2c4c37 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col items-center justify-center p-8">
+<div class="max-w-4xl w-full flex flex-col gap-6">
+<!-- Header -->
+<header class="flex items-center justify-between py-4 border-b border-slate-700">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl">sports_esports</span>
+<h1 class="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Snake Game V2</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-300 hover:text-primary cursor-pointer transition-colors">settings</span>
+<div class="bg-slate-700 rounded-full w-10 h-10 flex items-center justify-center text-slate-100 font-bold" data-alt="User Avatar Placeholder">
+                    U
+                </div>
+</div>
+</header>
+<!-- Description & Controls -->
+<div class="flex flex-col md:flex-row justify-between items-center gap-4 py-2">
+<div>
+<p class="text-slate-600 dark:text-slate-300 text-sm">A modern, dark-themed desktop snake game interface.</p>
+</div>
+<div class="flex gap-3 bg-slate-800 p-2 rounded-full">
+<button class="px-6 py-2 rounded-full bg-slate-700 hover:bg-slate-600 text-slate-100 text-sm font-bold transition-colors">Easy</button>
+<button class="px-6 py-2 rounded-full bg-primary text-slate-900 text-sm font-bold shadow-lg shadow-primary/20">Medium</button>
+<button class="px-6 py-2 rounded-full bg-slate-700 hover:bg-slate-600 text-slate-100 text-sm font-bold transition-colors">Expert</button>
+</div>
+</div>
+<!-- Game Area -->
+<div class="bg-slate-800 rounded-xl p-6 shadow-2xl relative border border-slate-700">
+<!-- Score -->
+<div class="absolute top-4 right-6 bg-slate-900/80 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700 z-10">
+<p class="font-display font-bold text-primary text-lg">Score: 24</p>
+</div>
+<!-- Game Board -->
+<div class="w-full aspect-video bg-slate-900 rounded-lg overflow-hidden relative border border-slate-700 grid-bg shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]">
+<!-- Food -->
+<div class="absolute top-[40%] left-[70%] w-10 h-10 bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.6)] border-2 border-red-400"></div>
+<!-- Snake Body -->
+<div class="absolute top-[60%] left-[20%] w-10 h-10 bg-primary/80 rounded-sm"></div>
+<div class="absolute top-[60%] left-[calc(20%+40px)] w-10 h-10 bg-primary/80 rounded-sm"></div>
+<div class="absolute top-[60%] left-[calc(20%+80px)] w-10 h-10 bg-primary/90 rounded-sm"></div>
+<!-- Snake Turn -->
+<div class="absolute top-[calc(60%-40px)] left-[calc(20%+80px)] w-10 h-10 bg-primary rounded-sm border-t-2 border-r-2 border-primary/50 shadow-[0_0_10px_rgba(33,196,93,0.3)]"></div>
+<!-- Snake Head -->
+<div class="absolute top-[calc(60%-80px)] left-[calc(20%+80px)] w-10 h-10 bg-primary rounded-t-lg shadow-[0_0_20px_rgba(33,196,93,0.5)] border border-green-400 z-10 flex items-center justify-center">
+<div class="w-2 h-2 bg-slate-900 rounded-full absolute top-2 left-2"></div>
+<div class="w-2 h-2 bg-slate-900 rounded-full absolute top-2 right-2"></div>
+</div>
+</div>
+</div>
+<!-- Footer / Instructions -->
+<footer class="flex justify-center items-center py-6 mt-4">
+<div class="flex gap-6 text-slate-500 dark:text-slate-400 text-sm font-medium">
+<span class="flex items-center gap-2"><kbd class="bg-slate-800 px-2 py-1 rounded text-slate-200 border border-slate-700">R</kbd> Restart</span>
+<span class="w-px h-4 bg-slate-700"></span>
+<span class="flex items-center gap-2"><kbd class="bg-slate-800 px-2 py-1 rounded text-slate-200 border border-slate-700">M</kbd> Mute</span>
+</div>
+</footer>
+</div>
+</body></html>

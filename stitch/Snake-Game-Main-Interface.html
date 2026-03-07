@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Snake Game</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#21c45d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#122017",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen antialiased selection:bg-primary/30">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-10 py-5">
+<div class="flex items-center gap-4 text-primary">
+<span class="material-symbols-outlined text-3xl">videogame_asset</span>
+<h2 class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight tracking-[-0.015em]">Snake Game</h2>
+</div>
+</header>
+<div class="flex flex-wrap gap-4 px-4 py-6">
+<div class="flex min-w-[150px] flex-1 basis-[fit-content] flex-col gap-2 rounded-xl border-2 border-primary/20 bg-background-light dark:bg-background-dark/50 p-6 items-center text-center shadow-sm">
+<p class="text-primary tracking-light text-4xl font-bold leading-tight">0</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-sm">stars</span>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">Current Score</p>
+</div>
+</div>
+<div class="flex min-w-[150px] flex-1 basis-[fit-content] flex-col gap-2 rounded-xl border-2 border-primary/20 bg-background-light dark:bg-background-dark/50 p-6 items-center text-center shadow-sm">
+<p class="text-primary tracking-light text-4xl font-bold leading-tight">1250</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-sm">emoji_events</span>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">High Score</p>
+</div>
+</div>
+</div>
+<div class="flex px-4 py-3 justify-center">
+<div class="flex h-12 w-full max-w-md items-center justify-center rounded-full bg-primary/10 p-1 border border-primary/20">
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-4 transition-colors has-[:checked]:bg-primary has-[:checked]:text-white text-slate-600 dark:text-slate-300 text-sm font-bold leading-normal uppercase tracking-wider hover:bg-primary/20">
+<span class="truncate">Easy</span>
+<input class="invisible w-0" name="difficulty" type="radio" value="Easy"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-4 transition-colors has-[:checked]:bg-primary has-[:checked]:text-white text-slate-600 dark:text-slate-300 text-sm font-bold leading-normal uppercase tracking-wider hover:bg-primary/20">
+<span class="truncate">Medium</span>
+<input checked="" class="invisible w-0" name="difficulty" type="radio" value="Medium"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-4 transition-colors has-[:checked]:bg-primary has-[:checked]:text-white text-slate-600 dark:text-slate-300 text-sm font-bold leading-normal uppercase tracking-wider hover:bg-primary/20">
+<span class="truncate">Expert</span>
+<input class="invisible w-0" name="difficulty" type="radio" value="Expert"/>
+</label>
+</div>
+</div>
+<div class="flex flex-col p-4">
+<div class="flex flex-col items-center gap-6 rounded-2xl border-4 border-solid border-primary/20 bg-slate-900/50 px-6 py-20 relative overflow-hidden shadow-[0_0_30px_rgba(33,196,93,0.1)]">
+<!-- Simulated Game Grid Background -->
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at center, #21c45d 1px, transparent 1px); background-size: 20px 20px;"></div>
+<div class="flex max-w-[480px] flex-col items-center gap-3 relative z-10">
+<span class="material-symbols-outlined text-primary text-6xl opacity-50">sports_esports</span>
+<p class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight tracking-[-0.015em] text-center">Ready to Play</p>
+<p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal text-center">Press any arrow key to start moving the snake.</p>
+</div>
+<button class="flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-8 bg-primary hover:bg-primary/90 transition-colors text-white text-base font-bold leading-normal tracking-wide uppercase shadow-[0_0_15px_rgba(33,196,93,0.4)] relative z-10">
+<span class="truncate">Start Game</span>
+</button>
+</div>
+</div>
+<div class="@container mt-8">
+<div class="gap-4 px-4 grid-cols-2 grid max-w-2xl mx-auto">
+<div class="flex flex-row items-center justify-center gap-4 bg-background-light dark:bg-background-dark/30 rounded-xl border border-primary/10 py-4 px-6 text-center">
+<div class="rounded-full bg-primary/20 p-3 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">gamepad</span>
+</div>
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal">Arrow Keys / WASD to move</p>
+</div>
+<div class="flex flex-row items-center justify-center gap-4 bg-background-light dark:bg-background-dark/30 rounded-xl border border-primary/10 py-4 px-6 text-center">
+<div class="rounded-full bg-primary/20 p-3 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">space_bar</span>
+</div>
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal">Space to Pause</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>
