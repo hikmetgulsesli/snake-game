@@ -204,6 +204,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           state.speed - state.config.speedIncrement
         );
 
+        // Generate new food at random empty position
+        const newFood = generateFood(state.config.gridSize, newBody);
+
         return {
           ...state,
           snake: {
@@ -211,6 +214,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             direction: newDirection,
             directionQueue: newQueue,
           },
+          food: newFood,
           score: newScore,
           speed: newSpeed,
         };

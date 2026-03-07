@@ -244,6 +244,39 @@ describe('MOVE_SNAKE action', () => {
     expect(newState.speed).toBeLessThan(150);
   });
 
+  it('should generate new food when food is eaten', () => {
+    const initialState = createTestState({
+      status: 'PLAYING',
+      score: 0,
+      snake: {
+        body: [
+          { x: 10, y: 10 },
+          { x: 9, y: 10 },
+          { x: 8, y: 10 },
+        ],
+        direction: 'RIGHT',
+        directionQueue: [],
+      },
+      food: { x: 11, y: 10 },
+      config: DIFFICULTY_SETTINGS.NORMAL,
+    });
+
+    const newState = gameReducer(initialState, { type: 'MOVE_SNAKE' });
+
+    // New food should be different from old food
+    expect(newState.food).not.toEqual({ x: 11, y: 10 });
+    // New food should be within grid bounds
+    expect(newState.food.x).toBeGreaterThanOrEqual(0);
+    expect(newState.food.x).toBeLessThan(20);
+    expect(newState.food.y).toBeGreaterThanOrEqual(0);
+    expect(newState.food.y).toBeLessThan(20);
+    // New food should not be on snake body
+    const foodOnSnake = newState.snake.body.some(
+      (segment) => segment.x === newState.food.x && segment.y === newState.food.y
+    );
+    expect(foodOnSnake).toBe(false);
+  });
+
   it('should trigger GAME_OVER on wall collision (top)', () => {
     const initialState = createTestState({
       status: 'PLAYING',
