@@ -1,0 +1,20 @@
+=== US-001: Project setup and design tokens ===
+COMPLETED: 2026-03-07T21:26:00+03:00
+FILES CHANGED:
+  - app/globals.css (new design tokens)
+  - app/layout.tsx (Space Grotesk + DM Sans fonts)
+  - app/page.tsx (placeholder with retro styling)
+  - next.config.ts (standalone output)
+  - types/game.ts (game types)
+  - constants/game.ts (game constants)
+  - __tests__/home.test.tsx (updated)
+  - __tests__/config.test.ts (new)
+  - __tests__/constants.test.ts (new)
+  - .env.example (new)
+KEY DECISIONS:
+  - Used Space Grotesk/DM Sans font pair (Stitch-compatible)
+  - Retro color palette: neon green #39ff14, dark bg #0a0a0a, food red #ff073a
+  - CSS variables for all design tokens (colors, typography, spacing, animations)
+  - Comprehensive game constants for 3 difficulty levels
+DEPENDENCIES ADDED: None (using existing setup)
+PR_URL: https://github.com/hikmetgulsesli/snake-game/pull/11
