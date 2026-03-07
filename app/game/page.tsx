@@ -1,15 +1,14 @@
 'use client';
 
 import React, { useEffect, useCallback, useState, useSyncExternalStore } from 'react';
-import { GameGrid } from '../components/GameGrid';
-import { HUD } from '../components/HUD';
-import { MainMenu } from '../components/MainMenu';
-import { HighScoreSummary } from '../components/HighScoresList';
-import { RetroButton } from '../components/RetroButton';
-import { useGameReducer } from '../hooks/useGameReducer';
-import { useHighScores } from '../hooks/useHighScores';
-import { Direction, Difficulty } from '../types/game';
-import { DIRECTION_KEYS, DIFFICULTY_SETTINGS } from '../constants/game';
+import { GameGrid } from '../../components/GameGrid';
+import { HUD } from '../../components/HUD';
+import { HighScoreSummary } from '../../components/HighScoresList';
+import { RetroButton } from '../../components/RetroButton';
+import { useGameReducer } from '../../hooks/useGameReducer';
+import { useHighScores } from '../../hooks/useHighScores';
+import { Direction, Difficulty } from '../../types/game';
+import { DIRECTION_KEYS, DIFFICULTY_SETTINGS } from '../../constants/game';
 
 // Hook to get cell size based on viewport
 function useCellSize() {
@@ -28,22 +27,40 @@ function useCellSize() {
   );
 }
 
-export default function Home() {
-  const { state, initGame, moveSnake, changeDirection, pauseGame, resumeGame, resetGame } = useGameReducer('NORMAL');
+interface GameArenaProps {
+  /** Initial difficulty (default: NORMAL) */
+  initialDifficulty?: Difficulty;
+}
+
+/**
+ * Game Arena Page
+ * 
+ * The main game play screen featuring:
+ * - Game grid with snake and food
+ * - HUD displaying score, speed, high score, and pause button
+ * - Pause overlay with resume/restart options
+ * - Game over overlay with final score and high scores
+ * - Keyboard controls (WASD/Arrows for movement, P/Space for pause)
+ */
+export default function GameArena({ initialDifficulty = 'NORMAL' }: GameArenaProps = {}) {
+  const { state, initGame, moveSnake, changeDirection, pauseGame, resumeGame, resetGame } = useGameReducer(initialDifficulty);
   const { scores, isLoaded: scoresLoaded, addScore } = useHighScores();
   const [isMounted, setIsMounted] = useState(false);
   const [isNewHighScore, setIsNewHighScore] = useState(false);
   const [newScoreRank, setNewScoreRank] = useState<number | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('NORMAL');
   const cellSize = useCellSize();
 
   // Set mounted state for hydration safety
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMounted(true);
+      // Auto-start the game when entering the game arena
+      if (state.status === 'MENU') {
+        initGame(initialDifficulty);
+      }
     }, 0);
     return () => clearTimeout(timer);
-  }, []);
+  }, [initGame, initialDifficulty, state.status]);
 
   // Handle game over - check and save high score
   useEffect(() => {
@@ -62,7 +79,7 @@ export default function Home() {
 
   // Reset new high score flag when starting new game
   useEffect(() => {
-    if (state.status === 'PLAYING' || state.status === 'MENU') {
+    if (state.status === 'PLAYING') {
       const timer = setTimeout(() => {
         setIsNewHighScore(false);
         setNewScoreRank(null);
@@ -98,7 +115,7 @@ export default function Home() {
       e.preventDefault();
     }
 
-    // Pause/Resume with space or P key
+    // Pause/Resume with Space or P key
     if (e.key === ' ' || e.key === 'p' || e.key === 'P') {
       handlePauseToggle();
       return;
@@ -116,16 +133,6 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
-  // Handle start game from menu
-  const handleStartGame = useCallback(() => {
-    initGame(selectedDifficulty);
-  }, [initGame, selectedDifficulty]);
-
-  // Handle difficulty change from menu
-  const handleDifficultyChange = useCallback((difficulty: Difficulty) => {
-    setSelectedDifficulty(difficulty);
-  }, []);
-
   const initialSpeed = DIFFICULTY_SETTINGS[state.difficulty].initialSpeed;
   const highestScore = scores.length > 0 ? scores[0].score : 0;
 
@@ -138,34 +145,6 @@ export default function Home() {
     );
   }
 
-  // Render Main Menu
-  if (state.status === 'MENU') {
-    return (
-      <div className="min-h-screen bg-[#0a0a0a]">
-        {/* Header */}
-        <header className="flex items-center justify-between px-4 md:px-10 py-4 border-b border-[#2a2a2a]">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl text-[#39ff14]">SNAKE</span>
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white">GAME</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-400">v1.0</span>
-          </div>
-        </header>
-
-        {/* Main Menu */}
-        <MainMenu
-          selectedDifficulty={selectedDifficulty}
-          onDifficultyChange={handleDifficultyChange}
-          onStartGame={handleStartGame}
-          highScores={scores}
-          isLoaded={scoresLoaded}
-        />
-      </div>
-    );
-  }
-
-  // Render Game Screen (PLAYING, PAUSED, GAME_OVER)
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
       {/* Header */}
